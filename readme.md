@@ -1,4 +1,4 @@
-# Travel to Class Expense
+# Expense Claim
 ## Introduction
 Whenever I submitted expense claim information through Google Forms, I was required to repetitively enter my bank details and upload expense receipts.
 
