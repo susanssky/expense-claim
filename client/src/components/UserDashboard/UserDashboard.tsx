@@ -114,7 +114,7 @@ const UserDashboard = ({ currentUser, setState }: PropUserDashboardType) => {
   const fetchReceiptsData = useCallback(async () => {
     try {
       const result = await axios.get(
-        `${RECEIPT_API_URL}user/${currentUser.username}`
+        `${RECEIPT_API_URL}users/${currentUser.username}`
       )
       console.log(result.data)
       setData(result.data)
