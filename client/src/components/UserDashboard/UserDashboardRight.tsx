@@ -1,61 +1,61 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { DataType, PropUserDashboardRightType } from "../../utils/types";
-import { RECEIPT_API_URL } from "../../utils/apiUrl";
-import ReceiptCard from "./ReceiptCard";
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
+import { DataType, PropUserDashboardRightType } from '../../utils/types'
+import { RECEIPT_API_URL } from '../../utils/apiUrl'
+import ReceiptCard from './ReceiptCard'
 
 const UserDashboardRight = ({
   data,
   fetchReceiptsData,
 }: PropUserDashboardRightType) => {
-  const [editTableMode, setEditTabelModel] = useState<string | null>(null);
-  const [updatedReceipt, setUpdatedReceipt] = useState<DataType>({});
-  const [errorMsg, setErrorMsg] = useState<string>("");
+  const [editTableMode, setEditTabelModel] = useState<string | null>(null)
+  const [updatedReceipt, setUpdatedReceipt] = useState<DataType>({})
+  const [errorMsg, setErrorMsg] = useState<string>('')
 
   useEffect(() => {
-    fetchReceiptsData();
-  }, []);
+    fetchReceiptsData()
+  }, [fetchReceiptsData])
 
   const editReceipt = async (receipt: DataType) => {
     try {
       if (!editTableMode) {
-        setEditTabelModel(receipt._id);
-        setUpdatedReceipt(receipt);
+        setEditTabelModel(receipt._id)
+        setUpdatedReceipt(receipt)
       }
 
-      console.log(!Object.values(receipt).every((value) => value !== ""));
-      if (!Object.values(receipt).every((value) => value !== "")) {
-        setErrorMsg("Don't empty value");
-        return;
+      console.log(!Object.values(receipt).every((value) => value !== ''))
+      if (!Object.values(receipt).every((value) => value !== '')) {
+        setErrorMsg("Don't empty value")
+        return
       }
 
       if (editTableMode) {
-        const result = await axios.put(
+        await axios.put(
           `${RECEIPT_API_URL}${updatedReceipt._id}`,
           updatedReceipt
-        );
-        fetchReceiptsData();
-        setEditTabelModel(null);
-        setUpdatedReceipt({});
-        setErrorMsg("");
+        )
+        fetchReceiptsData()
+        setEditTabelModel(null)
+        setUpdatedReceipt({})
+        setErrorMsg('')
       }
     } catch (err) {
-      console.error(err);
+      console.error(err)
     }
-  };
+  }
 
   const deleteReceipt = async (public_id: string, id: string) => {
     try {
-      const result = await axios.delete(`${RECEIPT_API_URL}${id}`, {
+      await axios.delete(`${RECEIPT_API_URL}${id}`, {
         data: { public_id },
-      });
-      fetchReceiptsData();
+      })
+      fetchReceiptsData()
     } catch (err) {
-      console.error(err);
+      console.error(err)
     }
-  };
+  }
   return (
-    <div className="right-container">
+    <div className='right-container'>
       {data.map((item) => (
         <ReceiptCard
           key={item._id}
@@ -71,7 +71,7 @@ const UserDashboardRight = ({
         />
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default UserDashboardRight;
+export default UserDashboardRight

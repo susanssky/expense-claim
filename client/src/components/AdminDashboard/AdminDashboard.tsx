@@ -1,99 +1,100 @@
-import React, { useEffect, useState } from "react";
-import { RegisterType, StateType, DataType } from "../../utils/types";
-import { RECEIPT_API_URL } from "../../utils/apiUrl";
-import axios from "axios";
-import DownloadCSV from "./DownloadCSV";
-import TableRow from "./TableRow";
+import React, { useEffect, useState, useCallback } from 'react'
+import { RegisterType, StateType, DataType } from '../../utils/types'
+import { RECEIPT_API_URL } from '../../utils/apiUrl'
+import axios from 'axios'
+import DownloadCSV from './DownloadCSV'
+import TableRow from './TableRow'
 type PropType = {
-  currentUser: RegisterType;
-  setState: React.Dispatch<React.SetStateAction<StateType>>;
-};
+  currentUser: RegisterType
+  setState: React.Dispatch<React.SetStateAction<StateType>>
+}
 type ButtonType = {
-  All: boolean;
-  Processing: boolean;
-  Completed: boolean;
-};
+  All: boolean
+  Processing: boolean
+  Completed: boolean
+}
 const AdminDashBoard = ({ setState }: PropType) => {
-  const btnArr = ["All", "Processing", "Completed"];
-  const [originalData, setOriginalData] = useState<DataType[]>([]);
-  const [filteredData, setFilteredData] = useState<DataType[]>([]);
+  const btnArr = ['All', 'Processing', 'Completed']
+  const [originalData, setOriginalData] = useState<DataType[]>([])
+  const [filteredData, setFilteredData] = useState<DataType[]>([])
   const [currentlyButton, setCurrentlyButton] = useState<ButtonType>({
     All: false,
     Processing: true,
     Completed: false,
-  });
+  })
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
-      const result = await axios.get(`${RECEIPT_API_URL}`);
-      setOriginalData(result.data);
+      const result = await axios.get(`${RECEIPT_API_URL}`)
+      setOriginalData(result.data)
       if (currentlyButton.Processing) {
         setFilteredData(
-          result.data.filter((item: DataType) => item.status === "In Progress")
-        );
+          result.data.filter((item: DataType) => item.status === 'In Progress')
+        )
       } else if (currentlyButton.Completed) {
         setFilteredData(
-          result.data.filter((item: DataType) => item.status === "Completed")
-        );
+          result.data.filter((item: DataType) => item.status === 'Completed')
+        )
       } else {
-        setFilteredData(result.data);
+        setFilteredData(result.data)
       }
     } catch (err) {
-      console.error(err);
+      console.error(err)
     }
-  };
+  }, [currentlyButton.Completed, currentlyButton.Processing])
+
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData()
+  }, [fetchData])
 
   const handleSwitchProcessingComplete = async (item: DataType) => {
     try {
-      if (item.status === "In Progress") {
+      if (item.status === 'In Progress') {
         const response = await axios.put(`${RECEIPT_API_URL}${item._id}`, {
           ...item,
-          status: "Completed",
-        });
-        console.log(response.data);
-      } else if (item.status === "Completed") {
+          status: 'Completed',
+        })
+        console.log(response.data)
+      } else if (item.status === 'Completed') {
         const response = await axios.put(`${RECEIPT_API_URL}${item._id}`, {
           ...item,
-          status: "In Progress",
-        });
-        console.log(response.data);
+          status: 'In Progress',
+        })
+        console.log(response.data)
       }
-      fetchData();
+      fetchData()
     } catch (err) {
-      console.error(err);
+      console.error(err)
     }
-  };
+  }
   const handleShowTaskByStatus = (key: string) => {
     setCurrentlyButton({
       All: false,
       Processing: false,
       Completed: false,
       [key]: true,
-    });
-  };
+    })
+  }
   useEffect(() => {
     const showTask = () => {
-      let data = originalData;
+      let data = originalData
       if (currentlyButton.Processing) {
-        data = data.filter((item) => item.status === "In Progress");
+        data = data.filter((item) => item.status === 'In Progress')
       } else if (currentlyButton.Completed) {
-        data = data.filter((item) => item.status === "Completed");
+        data = data.filter((item) => item.status === 'Completed')
       }
-      setFilteredData(data);
-    };
-    showTask();
-  }, [currentlyButton]);
+      setFilteredData(data)
+    }
+    showTask()
+  }, [currentlyButton, originalData])
 
   return (
     <>
-      <nav className="admin-nav">
+      <nav className='admin-nav'>
         <button
           onClick={() =>
             setState({
-              action: "login",
+              action: 'login',
               user: null,
             })
           }
@@ -116,8 +117,8 @@ const AdminDashBoard = ({ setState }: PropType) => {
         </div>
         <button onClick={fetchData}>Refresh</button>
       </nav>
-      <main className="admin-main">
-        <table cellPadding="0" cellSpacing="0">
+      <main className='admin-main'>
+        <table cellPadding='0' cellSpacing='0'>
           <thead>
             <tr>
               <th>Img Name</th>
@@ -142,7 +143,7 @@ const AdminDashBoard = ({ setState }: PropType) => {
         </table>
       </main>
     </>
-  );
-};
+  )
+}
 
-export default AdminDashBoard;
+export default AdminDashBoard

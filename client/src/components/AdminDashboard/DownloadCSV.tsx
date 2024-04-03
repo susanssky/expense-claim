@@ -1,16 +1,15 @@
-import React from "react";
-import { CSVLink, CSVDownload } from "react-csv";
-import { DataType } from "../../utils/types";
+import { CSVLink } from 'react-csv'
+import { DataType } from '../../utils/types'
 type PropType = {
-  CSVData: DataType[];
-};
+  CSVData: DataType[]
+}
 
 const DownloadCSV = ({ CSVData }: PropType) => {
   return (
     <CSVLink data={CSVData}>
       <button>Download CSV</button>
     </CSVLink>
-  );
-};
+  )
+}
 
-export default DownloadCSV;
+export default DownloadCSV
